@@ -6,8 +6,8 @@
 
 SCENARIO("values can be hashed", "[libconstexpr]") {
     GIVEN("Two integers") {
-        const int i{3};
-        const int j{4};
+        constexpr int i{3};
+        constexpr int j{4};
 
         WHEN("their hash is computed") {
             STATIC_REQUIRE(
@@ -23,8 +23,8 @@ SCENARIO("values can be hashed", "[libconstexpr]") {
         }
     }
     GIVEN("Two std::size_t") {
-        const std::size_t i{6};
-        const std::size_t j{10};
+        constexpr std::size_t i{6};
+        constexpr std::size_t j{10};
 
         WHEN("their hash is computed") {
             STATIC_REQUIRE(
@@ -41,7 +41,7 @@ SCENARIO("values can be hashed", "[libconstexpr]") {
     }
 
     GIVEN("A null pointer") {
-        const std::nullptr_t i{nullptr};
+        constexpr std::nullptr_t i{nullptr};
 
         WHEN("its hash is computed") {
             STATIC_REQUIRE(std::is_same_v<
