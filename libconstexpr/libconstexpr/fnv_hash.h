@@ -1,7 +1,9 @@
 #ifndef LIBCONSTEXPR_FNV_HASH_H
 #define LIBCONSTEXPR_FNV_HASH_H
 
+#include <bit>
 #include <cstddef>
+#include <type_traits>
 
 namespace libconstexpr {
     template <typename ResultType = std::size_t>
@@ -21,13 +23,33 @@ namespace libconstexpr {
         constexpr static ResultType offset_basis{0xcbf29ce484222325};
     };
 
-    template <typename ResultType = std::size_t, typename It>
-    constexpr ResultType fnv1a_hash_bytes(It begin, It end) {
+    template <typename ElementType>
+    constexpr unsigned char get_byte(ElementType element, std::size_t byte) {
+        static_assert((std::endian::native == std::endian::big) ||
+                      (std::endian::native == std::endian::little) ||
+                      (sizeof(ElementType) == 1));
+        if constexpr (sizeof(ElementType) == 1) {
+            return element;
+        } else if constexpr (std::endian::native == std::endian::little) {
+            return static_cast<std::size_t>(element) >> (8 * byte);
+        } else {
+            return static_cast<std::size_t>(element) >>
+                   (8 * (sizeof(ElementType) - byte - 1));
+        }
+    }
+
+    template <typename ResultType = std::size_t, typename ElementType>
+    requires(std::is_integral_v<ElementType>)
+    constexpr ResultType fnv1a_hash_bytes(const ElementType* element,
+                                          std::size_t n_elements) {
         ResultType hash{fnv_parameters<ResultType>::offset_basis};
 
-        for (; begin != end; ++begin) {
-            hash = hash ^ static_cast<unsigned char>(*begin);
-            hash = hash * fnv_parameters<ResultType>::offset_prime;
+        for (; n_elements > 0; --n_elements, ++element) {
+            for (std::size_t i = 0; i < sizeof(ElementType); ++i) {
+                hash = hash ^ get_byte(*element, i);
+
+                hash = hash * fnv_parameters<ResultType>::offset_prime;
+            }
         }
 
         return hash;

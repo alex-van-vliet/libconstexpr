@@ -28,10 +28,10 @@ namespace libconstexpr {
         // for hashing a pointer is provided.
     };
 
-    template <>
-    struct hash<std::string> {
-        constexpr std::size_t operator()(const std::string& s) {
-            return fnv1a_hash_bytes(s.cbegin(), s.cend());
+    template <typename CharType>
+    struct hash<std::basic_string<CharType>> {
+        constexpr std::size_t operator()(const std::basic_string<CharType>& s) {
+            return fnv1a_hash_bytes(s.data(), s.length());
         }
     };
 } // namespace libconstexpr

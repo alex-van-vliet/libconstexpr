@@ -75,4 +75,88 @@ SCENARIO("values can be hashed", "[libconstexpr]") {
             }
         }
     }
+
+    GIVEN("Two wchar strings") {
+        constexpr wchar_t i[6]{L"hello"};
+        constexpr wchar_t j[5]{L"test"};
+
+        WHEN("their hash is computed") {
+            STATIC_REQUIRE(
+                std::is_same_v<decltype(libconstexpr::hash<std::wstring>{}(
+                                   std::wstring(i, i + sizeof(i) - 1))),
+                               std::size_t>);
+
+            constexpr auto hash_i = libconstexpr::hash<std::wstring>{}(
+                std::wstring(i, i + sizeof(i) / sizeof(wchar_t) - 1));
+            constexpr auto hash_j = libconstexpr::hash<std::wstring>{}(
+                std::wstring(j, j + sizeof(j) / sizeof(wchar_t) - 1));
+
+            THEN("their hash is different") {
+                STATIC_REQUIRE(hash_i != hash_j);
+            }
+        }
+    }
+
+    GIVEN("Two char8 strings") {
+        constexpr char8_t i[6]{u8"hello"};
+        constexpr char8_t j[5]{u8"test"};
+
+        WHEN("their hash is computed") {
+            STATIC_REQUIRE(
+                std::is_same_v<decltype(libconstexpr::hash<std::u8string>{}(
+                                   std::u8string(i, i + sizeof(i) - 1))),
+                               std::size_t>);
+
+            constexpr auto hash_i = libconstexpr::hash<std::u8string>{}(
+                std::u8string(i, i + sizeof(i) / sizeof(char8_t) - 1));
+            constexpr auto hash_j = libconstexpr::hash<std::u8string>{}(
+                std::u8string(j, j + sizeof(j) / sizeof(char8_t) - 1));
+
+            THEN("their hash is different") {
+                STATIC_REQUIRE(hash_i != hash_j);
+            }
+        }
+    }
+
+    GIVEN("Two char16 strings") {
+        constexpr char16_t i[6]{u"hello"};
+        constexpr char16_t j[5]{u"test"};
+
+        WHEN("their hash is computed") {
+            STATIC_REQUIRE(
+                std::is_same_v<decltype(libconstexpr::hash<std::u16string>{}(
+                                   std::u16string(i, i + sizeof(i) - 1))),
+                               std::size_t>);
+
+            constexpr auto hash_i = libconstexpr::hash<std::u16string>{}(
+                std::u16string(i, i + sizeof(i) / sizeof(char16_t) - 1));
+            constexpr auto hash_j = libconstexpr::hash<std::u16string>{}(
+                std::u16string(j, j + sizeof(j) / sizeof(char16_t) - 1));
+
+            THEN("their hash is different") {
+                STATIC_REQUIRE(hash_i != hash_j);
+            }
+        }
+    }
+
+    GIVEN("Two char32 strings") {
+        constexpr char32_t i[6]{U"hello"};
+        constexpr char32_t j[5]{U"test"};
+
+        WHEN("their hash is computed") {
+            STATIC_REQUIRE(
+                std::is_same_v<decltype(libconstexpr::hash<std::u32string>{}(
+                                   std::u32string(i, i + sizeof(i) - 1))),
+                               std::size_t>);
+
+            constexpr auto hash_i = libconstexpr::hash<std::u32string>{}(
+                std::u32string(i, i + sizeof(i) / sizeof(char32_t) - 1));
+            constexpr auto hash_j = libconstexpr::hash<std::u32string>{}(
+                std::u32string(j, j + sizeof(j) / sizeof(char32_t) - 1));
+
+            THEN("their hash is different") {
+                STATIC_REQUIRE(hash_i != hash_j);
+            }
+        }
+    }
 }
