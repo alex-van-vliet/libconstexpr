@@ -39,4 +39,18 @@ SCENARIO("values can be hashed", "[libconstexpr]") {
             }
         }
     }
+
+    GIVEN("A null pointer") {
+        const std::nullptr_t i{nullptr};
+
+        WHEN("its hash is computed") {
+            STATIC_REQUIRE(std::is_same_v<
+                           decltype(libconstexpr::hash<std::nullptr_t>{}(i)),
+                           std::size_t>);
+
+            constexpr auto hash_i = libconstexpr::hash<std::nullptr_t>{}(i);
+
+            THEN("its hash is 0") { STATIC_REQUIRE(hash_i == 0); }
+        }
+    }
 }

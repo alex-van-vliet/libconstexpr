@@ -12,6 +12,11 @@ namespace libconstexpr {
     struct hash<T> {
         constexpr std::size_t operator()(T t) { return t; }
     };
+
+    template <>
+    struct hash<std::nullptr_t> {
+        constexpr std::size_t operator()(std::nullptr_t) { return 0; }
+    };
 } // namespace libconstexpr
 
 #endif // LIBCONSTEXPR_HASH_H
