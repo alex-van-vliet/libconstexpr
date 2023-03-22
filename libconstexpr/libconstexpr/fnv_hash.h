@@ -42,6 +42,15 @@ namespace libconstexpr {
     requires(std::is_integral_v<ElementType>)
     constexpr ResultType fnv1a_hash_bytes(const ElementType* element,
                                           std::size_t n_elements) {
+        // Usually, the elements would just be converted to an unsigned char*.
+        // Due to the constexpr constraint, this cannot be done, and as such
+        // this function handles pointers to all integral types. To do so,
+        // if the element only contains one byte, it is used directly, otherwise
+        // it is casted to std::size_t and its bytes are read from left to
+        // right (not all the bytes of the casted value will be read, only
+        // those from the element). Note that the algorithm aims to provide
+        // the same result no matter if the machine is little-endian or
+        // big-endian.
         ResultType hash{fnv_parameters<ResultType>::offset_basis};
 
         for (; n_elements > 0; --n_elements, ++element) {
