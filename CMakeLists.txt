@@ -20,3 +20,5 @@ list(APPEND CMAKE_MODULE_PATH ${catch2_SOURCE_DIR}/extras)
 include(Catch)
 
 find_package(Catch2 3 REQUIRED)
+
+add_subdirectory(libconstexpr)
