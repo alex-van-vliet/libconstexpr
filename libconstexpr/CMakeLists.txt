@@ -1,4 +1,4 @@
-add_library(libconstexpr INTERFACE constexpr/hash.h)
+add_library(libconstexpr INTERFACE libconstexpr/hash.h)
 target_include_directories(libconstexpr INTERFACE .)
 
 add_executable(tests_hash tests/hash.cpp)
