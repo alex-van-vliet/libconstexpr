@@ -103,12 +103,20 @@ namespace libconstexpr {
             { t == tc } -> std::same_as<bool>;
             // FIXME: add check to make sure that == is constexpr
 
-            { t.value } -> std::same_as<const Value&>;
+            { t.value } -> std::same_as<Value&>;
         };
 
         template <typename Hash, typename Equal, typename Value>
         struct hashless_node {
-            const Value value;
+            Value value;
+
+            constexpr hashless_node(Value&& value) : value{std::move(value)} {}
+            constexpr hashless_node(const Value& value) : value{value} {}
+
+            hashless_node(const hashless_node&) = delete;
+            hashless_node& operator=(const hashless_node&) = delete;
+
+            constexpr ~hashless_node() = default;
 
             [[nodiscard]] constexpr std::size_t hash() const {
                 return Hash{}(value);
@@ -121,8 +129,19 @@ namespace libconstexpr {
 
         template <typename Hash, typename Equal, typename Value>
         struct hashfull_node {
-            const Value value;
-            const std::size_t cached_hash{Hash{}(value)};
+            Value value;
+
+            explicit constexpr hashfull_node(Value&& v) : value{std::move(v)} {
+                cached_hash = Hash{}(value);
+            }
+            explicit constexpr hashfull_node(const Value& v) : value{v} {
+                cached_hash = Hash{}(value);
+            }
+
+            hashfull_node(const hashfull_node&) = delete;
+            hashfull_node& operator=(const hashfull_node&) = delete;
+
+            constexpr ~hashfull_node() = default;
 
             [[nodiscard]] constexpr std::size_t hash() const {
                 return cached_hash;
@@ -131,6 +150,9 @@ namespace libconstexpr {
             constexpr bool operator==(const hashfull_node& other) const {
                 return (hash() == other.hash()) && Equal{}(value, other.value);
             }
+
+          private:
+            std::size_t cached_hash;
         };
     } // namespace detail
 
