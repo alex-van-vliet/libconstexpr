@@ -7,6 +7,7 @@
 
 SCENARIO("values can be hashed", "[libconstexpr]") {
     GIVEN("Two integers") {
+        STATIC_REQUIRE(libconstexpr::is_fast_hash<int>::value);
         constexpr int i{3};
         constexpr int j{4};
 
@@ -24,6 +25,7 @@ SCENARIO("values can be hashed", "[libconstexpr]") {
         }
     }
     GIVEN("Two std::size_t") {
+        STATIC_REQUIRE(libconstexpr::is_fast_hash<std::size_t>::value);
         constexpr std::size_t i{6};
         constexpr std::size_t j{10};
 
@@ -42,6 +44,7 @@ SCENARIO("values can be hashed", "[libconstexpr]") {
     }
 
     GIVEN("A null pointer") {
+        STATIC_REQUIRE(libconstexpr::is_fast_hash<std::nullptr_t>::value);
         constexpr std::nullptr_t i{nullptr};
 
         WHEN("its hash is computed") {
@@ -56,6 +59,7 @@ SCENARIO("values can be hashed", "[libconstexpr]") {
     }
 
     GIVEN("Two strings") {
+        STATIC_REQUIRE(!libconstexpr::is_fast_hash<std::string>::value);
         constexpr char i[6]{"hello"};
         constexpr char j[5]{"test"};
 
@@ -77,6 +81,7 @@ SCENARIO("values can be hashed", "[libconstexpr]") {
     }
 
     GIVEN("Two wchar strings") {
+        STATIC_REQUIRE(!libconstexpr::is_fast_hash<std::wstring>::value);
         constexpr wchar_t i[6]{L"hello"};
         constexpr wchar_t j[5]{L"test"};
 
@@ -98,6 +103,7 @@ SCENARIO("values can be hashed", "[libconstexpr]") {
     }
 
     GIVEN("Two char8 strings") {
+        STATIC_REQUIRE(!libconstexpr::is_fast_hash<std::u8string>::value);
         constexpr char8_t i[6]{u8"hello"};
         constexpr char8_t j[5]{u8"test"};
 
@@ -119,6 +125,7 @@ SCENARIO("values can be hashed", "[libconstexpr]") {
     }
 
     GIVEN("Two char16 strings") {
+        STATIC_REQUIRE(!libconstexpr::is_fast_hash<std::u16string>::value);
         constexpr char16_t i[6]{u"hello"};
         constexpr char16_t j[5]{u"test"};
 
@@ -140,6 +147,7 @@ SCENARIO("values can be hashed", "[libconstexpr]") {
     }
 
     GIVEN("Two char32 strings") {
+        STATIC_REQUIRE(!libconstexpr::is_fast_hash<std::u32string>::value);
         constexpr char32_t i[6]{U"hello"};
         constexpr char32_t j[5]{U"test"};
 

@@ -7,6 +7,9 @@
 
 namespace libconstexpr {
     template <typename T>
+    struct is_fast_hash : public std::false_type {};
+
+    template <typename T>
     struct hash;
 
     template <typename T>
@@ -15,10 +18,17 @@ namespace libconstexpr {
         constexpr std::size_t operator()(T t) { return t; }
     };
 
+    template <typename T>
+    requires(std::is_integral_v<T>)
+    struct is_fast_hash<T> : public std::true_type {};
+
     template <>
     struct hash<std::nullptr_t> {
         constexpr std::size_t operator()(std::nullptr_t) { return 0; }
     };
+
+    template <>
+    struct is_fast_hash<std::nullptr_t> : public std::true_type {};
 
     template <typename T>
     struct hash<T*> {
@@ -27,6 +37,9 @@ namespace libconstexpr {
         // confusion when using constexpr containers, no implementation
         // for hashing a pointer is provided.
     };
+
+    template <typename T>
+    struct is_fast_hash<T*> : public std::true_type {};
 
     template <typename CharType>
     struct hash<std::basic_string<CharType>> {
