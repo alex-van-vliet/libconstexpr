@@ -6,7 +6,7 @@
 #include <cstddef>
 
 namespace libconstexpr {
-    namespace hashtable {
+    namespace detail {
         template <typename T>
         concept size_policy_concept = requires(T t, std::size_t n) {
             { t.next(n) } -> std::same_as<std::size_t>;

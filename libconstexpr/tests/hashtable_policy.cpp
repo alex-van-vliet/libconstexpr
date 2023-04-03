@@ -20,9 +20,9 @@ constexpr bool is_prime(std::size_t n) {
 
 SCENARIO("size policies provide sizes", "[libconstexpr]") {
     GIVEN("a prime size policy") {
-        using policy = libconstexpr::hashtable::prime_size_policy;
+        using policy = libconstexpr::detail::prime_size_policy;
 
-        STATIC_REQUIRE(libconstexpr::hashtable::size_policy_concept<policy>);
+        STATIC_REQUIRE(libconstexpr::detail::size_policy_concept<policy>);
 
         WHEN("a next size is requested") {
             constexpr std::size_t n{1000uz};
@@ -40,9 +40,9 @@ SCENARIO("size policies provide sizes", "[libconstexpr]") {
 SCENARIO("nodes contain a value", "[libconstexpr]") {
     using namespace libconstexpr;
     GIVEN("a hash-less node with an int") {
-        constexpr hashtable::hashless_node<hash<int>, int> node{2};
+        constexpr detail::hashless_node<hash<int>, int> node{2};
 
-        STATIC_REQUIRE(hashtable::node_concept<decltype(node), int>);
+        STATIC_REQUIRE(detail::node_concept<decltype(node), int>);
 
         WHEN("its value is requested") {
             THEN("its value is the given one") {
@@ -55,9 +55,9 @@ SCENARIO("nodes contain a value", "[libconstexpr]") {
         }
     }
     GIVEN("a hash-full node with an int") {
-        constexpr hashtable::hashfull_node<hash<int>, int> node{3};
+        constexpr detail::hashfull_node<hash<int>, int> node{3};
 
-        STATIC_REQUIRE(hashtable::node_concept<decltype(node), int>);
+        STATIC_REQUIRE(detail::node_concept<decltype(node), int>);
 
         WHEN("its value is requested") {
             THEN("its value is the given one") {
@@ -70,9 +70,9 @@ SCENARIO("nodes contain a value", "[libconstexpr]") {
         }
     }
     GIVEN("a hash-full node with an int and a given hash") {
-        constexpr hashtable::hashfull_node<hash<int>, int> node{3, 0uz};
+        constexpr detail::hashfull_node<hash<int>, int> node{3, 0uz};
 
-        STATIC_REQUIRE(hashtable::node_concept<decltype(node), int>);
+        STATIC_REQUIRE(detail::node_concept<decltype(node), int>);
 
         WHEN("its value is requested") {
             THEN("its value is the given one") {
