@@ -40,9 +40,13 @@ SCENARIO("size policies provide sizes", "[libconstexpr]") {
 SCENARIO("nodes contain a value", "[libconstexpr]") {
     using namespace libconstexpr;
     GIVEN("a hash-less node with an int") {
-        constexpr detail::hashless_node<hash<int>, int> node{2};
+        constexpr detail::hashless_node<hash<int>, std::equal_to<int>, int>
+            node{2};
 
-        STATIC_REQUIRE(detail::node_concept<decltype(node), int>);
+        STATIC_REQUIRE(
+            detail::node_concept<
+                detail::hashless_node<hash<int>, std::equal_to<int>, int>,
+                int>);
 
         WHEN("its value is requested") {
             THEN("its value is the given one") {
@@ -53,11 +57,32 @@ SCENARIO("nodes contain a value", "[libconstexpr]") {
         WHEN("its hash is requested") {
             THEN("its hash is provided") { STATIC_REQUIRE(node.hash() == 2uz); }
         }
+
+        WHEN("it is compared") {
+            THEN("it returns true on the same value") {
+                constexpr detail::hashless_node<hash<int>, std::equal_to<int>,
+                                                int>
+                    other{2};
+
+                STATIC_REQUIRE(node == other);
+            }
+            THEN("it returns false on a different value") {
+                constexpr detail::hashless_node<hash<int>, std::equal_to<int>,
+                                                int>
+                    other{5};
+
+                STATIC_REQUIRE(!(node == other));
+            }
+        }
     }
     GIVEN("a hash-full node with an int") {
-        constexpr detail::hashfull_node<hash<int>, int> node{3};
+        constexpr detail::hashfull_node<hash<int>, std::equal_to<int>, int>
+            node{3};
 
-        STATIC_REQUIRE(detail::node_concept<decltype(node), int>);
+        STATIC_REQUIRE(
+            detail::node_concept<
+                detail::hashfull_node<hash<int>, std::equal_to<int>, int>,
+                int>);
 
         WHEN("its value is requested") {
             THEN("its value is the given one") {
@@ -68,20 +93,22 @@ SCENARIO("nodes contain a value", "[libconstexpr]") {
         WHEN("its hash is requested") {
             THEN("its hash is provided") { STATIC_REQUIRE(node.hash() == 3uz); }
         }
-    }
-    GIVEN("a hash-full node with an int and a given hash") {
-        constexpr detail::hashfull_node<hash<int>, int> node{3, 0uz};
 
-        STATIC_REQUIRE(detail::node_concept<decltype(node), int>);
+        WHEN("it is compared") {
+            THEN("it returns true on the same value") {
+                constexpr detail::hashfull_node<hash<int>, std::equal_to<int>,
+                                                int>
+                    other{3};
 
-        WHEN("its value is requested") {
-            THEN("its value is the given one") {
-                STATIC_REQUIRE(node.value == 3);
+                STATIC_REQUIRE(node == other);
             }
-        }
+            THEN("it returns false on a different value") {
+                constexpr detail::hashfull_node<hash<int>, std::equal_to<int>,
+                                                int>
+                    other{5};
 
-        WHEN("its hash is requested") {
-            THEN("its hash is provided") { STATIC_REQUIRE(node.hash() == 0uz); }
+                STATIC_REQUIRE(!(node == other));
+            }
         }
     }
 }

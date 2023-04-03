@@ -97,29 +97,39 @@ namespace libconstexpr {
         };
 
         template <typename T, typename Value>
-        concept node_concept = requires(const T t) {
+        concept node_concept = requires(T t, const T tc) {
             { t.hash() } -> std::same_as<std::size_t>;
             // FIXME: add check to make sure that hash is constexpr
+            { t == tc } -> std::same_as<bool>;
+            // FIXME: add check to make sure that == is constexpr
 
             { t.value } -> std::same_as<const Value&>;
         };
 
-        template <typename Hash, typename Value>
+        template <typename Hash, typename Equal, typename Value>
         struct hashless_node {
             const Value value;
 
             [[nodiscard]] constexpr std::size_t hash() const {
                 return Hash{}(value);
             }
+
+            constexpr bool operator==(const hashless_node& other) const {
+                return (hash() == other.hash()) && Equal{}(value, other.value);
+            }
         };
 
-        template <typename Hash, typename Value>
+        template <typename Hash, typename Equal, typename Value>
         struct hashfull_node {
             const Value value;
             const std::size_t cached_hash{Hash{}(value)};
 
             [[nodiscard]] constexpr std::size_t hash() const {
                 return cached_hash;
+            }
+
+            constexpr bool operator==(const hashfull_node& other) const {
+                return (hash() == other.hash()) && Equal{}(value, other.value);
             }
         };
     } // namespace detail
