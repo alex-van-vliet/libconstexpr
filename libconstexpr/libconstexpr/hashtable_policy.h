@@ -96,6 +96,22 @@ namespace libconstexpr {
             }
         };
 
+        template <typename T, typename Value>
+        concept node_concept = requires(const T t) {
+            { t.hash() } -> std::same_as<std::size_t>;
+            // FIXME: add check to make sure that hash is constexpr
+
+            { t.value } -> std::same_as<const Value&>;
+        };
+
+        template <typename Hash, typename Value>
+        struct hashless_node {
+            const Value value;
+
+            [[nodiscard]] constexpr std::size_t hash() const {
+                return Hash{}(value);
+            }
+        };
     } // namespace hashtable
 
 } // namespace libconstexpr

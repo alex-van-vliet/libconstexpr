@@ -35,3 +35,22 @@ SCENARIO("size policies provide sizes", "[libconstexpr]") {
         }
     }
 }
+
+SCENARIO("nodes contain a value", "[libconstexpr]") {
+    using namespace libconstexpr;
+    GIVEN("a hash-less node with an int") {
+        constexpr hashtable::hashless_node<hash<int>, int> node{2};
+
+        STATIC_REQUIRE(hashtable::node_concept<decltype(node), int>);
+
+        WHEN("its value is requested") {
+            THEN("its value is the given one") {
+                STATIC_REQUIRE(node.value == 2);
+            }
+        }
+
+        WHEN("its hash is requested") {
+            THEN("its hash is provided") { STATIC_REQUIRE(node.hash() == 2uz); }
+        }
+    }
+}
