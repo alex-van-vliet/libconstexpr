@@ -53,4 +53,34 @@ SCENARIO("nodes contain a value", "[libconstexpr]") {
             THEN("its hash is provided") { STATIC_REQUIRE(node.hash() == 2uz); }
         }
     }
+    GIVEN("a hash-full node with an int") {
+        constexpr hashtable::hashfull_node<hash<int>, int> node{3};
+
+        STATIC_REQUIRE(hashtable::node_concept<decltype(node), int>);
+
+        WHEN("its value is requested") {
+            THEN("its value is the given one") {
+                STATIC_REQUIRE(node.value == 3);
+            }
+        }
+
+        WHEN("its hash is requested") {
+            THEN("its hash is provided") { STATIC_REQUIRE(node.hash() == 3uz); }
+        }
+    }
+    GIVEN("a hash-full node with an int and a given hash") {
+        constexpr hashtable::hashfull_node<hash<int>, int> node{3, 0uz};
+
+        STATIC_REQUIRE(hashtable::node_concept<decltype(node), int>);
+
+        WHEN("its value is requested") {
+            THEN("its value is the given one") {
+                STATIC_REQUIRE(node.value == 3);
+            }
+        }
+
+        WHEN("its hash is requested") {
+            THEN("its hash is provided") { STATIC_REQUIRE(node.hash() == 0uz); }
+        }
+    }
 }

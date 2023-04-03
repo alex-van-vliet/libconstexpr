@@ -112,6 +112,16 @@ namespace libconstexpr {
                 return Hash{}(value);
             }
         };
+
+        template <typename Hash, typename Value>
+        struct hashfull_node {
+            const Value value;
+            const std::size_t cached_hash{Hash{}(value)};
+
+            [[nodiscard]] constexpr std::size_t hash() const {
+                return cached_hash;
+            }
+        };
     } // namespace hashtable
 
 } // namespace libconstexpr
