@@ -2,6 +2,7 @@
 
 #include <cstddef>
 #include <catch2/catch_test_macros.hpp>
+#include <libconstexpr/hash.h>
 
 constexpr bool is_prime(std::size_t n) {
     if (n <= 1) {
