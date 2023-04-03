@@ -1,5 +1,5 @@
-#ifndef LIBCONSTEXPR_HASHTABLE_H
-#define LIBCONSTEXPR_HASHTABLE_H
+#ifndef LIBCONSTEXPR_HASHTABLE_POLICY_H
+#define LIBCONSTEXPR_HASHTABLE_POLICY_H
 
 #include <array>
 #include <concepts>
@@ -122,8 +122,8 @@ namespace libconstexpr {
                 return cached_hash;
             }
         };
-    } // namespace hashtable
+    } // namespace detail
 
 } // namespace libconstexpr
 
-#endif // LIBCONSTEXPR_HASHTABLE_H
+#endif // LIBCONSTEXPR_HASHTABLE_POLICY_H
